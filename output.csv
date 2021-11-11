@@ -1,13 +1,15 @@
 Название города,Время приезда,Время убытия,Экскурсия/остановка
-Berlin,8,8,starting point
-Bad Hersfeld,13.657142857142858,8,Stopping point,150
-Frankfurt,10.142857142857142,14.0,Auto museum
-Hilpoltstein,17.785714285714285,8,Stopping point,126
-Munich,9.8,11.0,Painting gallery
-Plzen,14.82857142857143,8,Stopping point,117
-Prague,9.67142857142857,12.0,Lovely streets
-Brno,14.985714285714286,20.0,History of city
-Olomouc,20.785714285714285,8,Stopping point,277
-Krakow,11.957142857142857,18.0,Best churches
-Zary,13.7,8,Stopping point,200
-Berlin,10.857142857142858,8,Ending point
+Berlin,,2021-11-11 08:00:00,starting point
+Bad Hersfeld,2021-11-11 13:39:00,2021-11-12 08:00:00,Stopping point
+Frankfurt,2021-11-12 10:08:00,2021-11-12 14:00:00,Auto museum
+Hilpoltstein,2021-11-12 17:47:00,2021-11-13 08:00:00,Stopping point
+Munich,2021-11-13 09:48:00,2021-11-13 11:00:00,Painting gallery
+Plzen,2021-11-13 14:49:00,2021-11-14 08:00:00,Stopping point
+Prague,2021-11-14 09:40:00,2021-11-14 12:00:00,Lovely streets
+Korneuburg,2021-11-14 16:17:00,2021-11-15 08:00:00,Stopping point
+Vienna,2021-11-15 08:28:00,2021-11-15 11:00:00,Classical concert
+Brno,2021-11-15 13:00:00,2021-11-15 20:00:00,History of city
+Olomouc,2021-11-15 20:47:00,2021-11-16 08:00:00,Stopping point
+Krakow,2021-11-16 11:57:00,2021-11-17 08:00:00,Best churches
+Zary,2021-11-17 13:41:00,2021-11-18 08:00:00,Stopping point
+Berlin,2021-11-18 10:51:00,,Ending point

@@ -23,6 +23,7 @@ def create_courses(cities: list):
 def count_course(course, graph):
     """
     Функция, оценивающая длину переданного маршрута
+    :param graph: Матрица расстояний между городами
     :param course: Маршрут, для оценки
     :return: Длина переданного маршрута
     """
