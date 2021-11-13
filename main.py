@@ -126,7 +126,7 @@ async def create_course_with_middle_cities(current_course, excursions, graph,
             = await \
             put_middle_city(i.name, current_course[index + 1],
                             current_drive_time, current_time,
-                            distance, graph, current_datetime, excursions)
+                            distance, current_datetime, graph, excursions)
         current_drive_time = possible_middle_city[1][0]
         current_datetime = possible_middle_city[1][1]
         current_time = possible_middle_city[1][2]
@@ -143,7 +143,7 @@ async def create_course_with_middle_cities(current_course, excursions, graph,
 
 
 async def put_middle_city(start_city, end_city, current_drive_time,
-                          current_time, distance, graph, current_datetime,
+                          current_time, distance, current_datetime, graph=None,
                           excursions=None, starting_city=None):
     """
     Асинхронная функция, возвращающая данные либо о промежуточном городе,
@@ -228,7 +228,8 @@ async def put_middle_city(start_city, end_city, current_drive_time,
         temp = list(create_excursion_city(end_city, excursions, current_time,
                     distance, current_drive_time, current_datetime))
         temp.append(True)
-        return
+
+        return temp
     middle_city = await find_middle_city(start_city, end_city,
                                          max_driving_distance)
     arrival = current_time + middle_city[1] / configs["velocity"]
@@ -330,14 +331,14 @@ async def complete_course(current_course, current_drive_time,
     while True:
         city = \
             await put_middle_city(end_city, start_city, current_drive_time,
-                                  current_time, distance, graph, 
-                                  current_datetime, starting_city=start_city)
+                                  current_time, distance, current_datetime,
+                                  graph, starting_city=start_city)
         end_city = city[0].name
         current_course.append(city[0])
         if len(city) == 3:
             current_course[len(current_course)-2].leaving =\
-                create_datetime(current_datetime + datetime.timedelta(days=1)
-                                , 8)
+                create_datetime(current_datetime +
+                                datetime.timedelta(days=1), 8)
         if end_city != start_city:
             current_drive_time = city[1][0]
             current_datetime = city[1][1]
