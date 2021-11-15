@@ -65,14 +65,17 @@ async def main():
     cities = [i.city for i in excursions]
     cities.append(args.starting_city)
     graph = await create_graph(cities)
-    all_courses = create_courses(cities[:len(cities) - 1])
-    min_distance = math.inf
-    for i in all_courses:
-        i.insert(0, args.starting_city)
-        distance = count_course(i, graph)
-        if distance < min_distance:
-            current_course = i
-            min_distance = distance
+    if len(cities) != 2:
+        all_courses = create_courses(cities[:len(cities) - 1])
+        min_distance = math.inf
+        for i in all_courses:
+            i.insert(0, args.starting_city)
+            distance = count_course(i, graph)
+            if distance < min_distance:
+                current_course = i
+                min_distance = distance
+    else:
+        current_course = [cities[1], cities[0]]
     current_course, current_parameters \
         = await create_course_with_middle_cities(current_course, excursions,
                                                  graph, current_datetime,

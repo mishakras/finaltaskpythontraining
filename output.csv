@@ -1,15 +1,6 @@
 Название города,Время приезда,Время убытия,Экскурсия/остановка
-Berlin,,2021-11-15 15:44:00,starting point
-Eisenach,2021-11-15 20:37:00,2021-11-16 08:00:00,Stopping point
+Berlin,,2021-11-15 15:53:00,starting point
+Eisenach,2021-11-15 20:46:00,2021-11-16 08:00:00,Stopping point
 Frankfurt,2021-11-16 10:54:00,2021-11-16 14:00:00,Auto museum
-Nuremberg,2021-11-16 16:51:00,2021-11-17 08:00:00,Stopping point
-Munich,2021-11-17 10:43:00,2021-11-17 12:00:00,Painting gallery
-Tachov,2021-11-17 15:05:00,2021-11-18 08:00:00,Stopping point
-Prague,2021-11-18 10:24:00,2021-11-18 15:00:00,Lovely streets
-Mikulov,2021-11-18 18:16:00,2021-11-19 08:00:00,Stopping point
-Vienna,2021-11-19 09:29:00,2021-11-19 11:00:00,Classical concert
-Brno,2021-11-19 13:00:00,2021-11-19 20:00:00,History of city
-Olomouc,2021-11-19 20:47:00,2021-11-20 08:00:00,Stopping point
-Krakow,2021-11-20 11:57:00,2021-11-21 08:00:00,Best churches
-Zary,2021-11-21 23:41:00,2021-11-22 08:00:00,Stopping point
-Berlin,2021-11-22 10:51:00,,Ending point
+Waltershausen,2021-11-16 17:02:00,2021-11-17 08:00:00,Stopping point
+Berlin,2021-11-17 12:45:00,,Ending point
