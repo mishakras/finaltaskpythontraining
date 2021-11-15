@@ -192,54 +192,40 @@ async def put_middle_city(start_city, end_city, current_drive_time,
                                          max_driving_distance)
     current_drive_time = 0
     if middle_city:
-        arrival = current_time + middle_city[1] / configs["velocity"]
-        current_time = 8
-        arrival_datetime = create_datetime(current_datetime, arrival)
         if distance - middle_city[1] > \
                 configs['driving time'] * configs["velocity"]:
             second_city = await find_middle_city(middle_city[0], end_city,
                                                  configs['driving time']
                                                  * configs["velocity"])
             if second_city:
-                current_datetime = current_datetime +\
-                                   datetime.timedelta(days=1)
-                leaving_datetime = create_datetime(current_datetime, current_time)
-                return [City(middle_city[0], arrival_datetime,
-                             leaving_datetime, "Stopping point"),
-                        [current_drive_time, current_datetime, current_time,
-                        distance - middle_city[1]]]
+                return create_middle_city(middle_city[0], distance,
+                                          middle_city[1],
+                                          current_time, current_datetime,
+                                          current_drive_time)
         else:
-            current_datetime = current_datetime + datetime.timedelta(days=1)
-            leaving_datetime = create_datetime(current_datetime, current_time)
-            return [City(middle_city[0], arrival_datetime, leaving_datetime,
-                         "Stopping point"), [current_drive_time,
-                                             current_datetime, current_time,
-                                             distance - middle_city[1]]]
-    current_time = 8
+            return create_middle_city(middle_city[0], distance, middle_city[1],
+                                      current_time, current_datetime,
+                                      current_drive_time)
     current_datetime = current_datetime + datetime.timedelta(days=1)
     max_driving_distance = configs['driving time'] * configs["velocity"]
     if distance < max_driving_distance:
+        current_time = 8
         if end_city == starting_city:
             arrival_datetime = create_datetime(current_datetime,
                                                current_time + distance
                                                / configs["velocity"])
             return [City(end_city, arrival_datetime, None,
                          "Ending point"), None, True]
-        temp = list(create_excursion_city(end_city, excursions, current_time,
-                    distance, current_drive_time, current_datetime))
-        temp.append(True)
-
-        return temp
+        create_excursion_city_dec = decorator(create_excursion_city)
+        return create_excursion_city_dec(end_city, excursions, current_time,
+                                         distance, current_drive_time,
+                                         current_datetime)
     middle_city = await find_middle_city(start_city, end_city,
                                          max_driving_distance)
-    arrival = current_time + middle_city[1] / configs["velocity"]
-    arrival_datetime = create_datetime(current_datetime, arrival)
-    current_datetime = current_datetime + datetime.timedelta(days=1)
-    leaving_datetime = create_datetime(current_datetime, current_time)
-    return [City(middle_city[0], arrival_datetime, leaving_datetime,
-                 "Stopping point"), [current_drive_time, current_datetime,
-                                     current_time, distance - middle_city[1]],
-            True]
+    create_middle_city_dec = decorator(create_middle_city)
+    return create_middle_city_dec(middle_city[0], distance, middle_city[1],
+                                  current_time, current_datetime,
+                                  current_drive_time)
 
 
 def create_excursion_city(excursion_city, excursions, current_time,
@@ -279,9 +265,34 @@ def create_excursion_city(excursion_city, excursions, current_time,
     stop_name = excursion[0].name
     arrival_datetime = create_datetime(current_datetime, arrival)
     leaving_datetime = create_datetime(current_datetime, current_time)
-    return City(excursion_city, arrival_datetime, leaving_datetime,
+    return [City(excursion_city, arrival_datetime, leaving_datetime,
                 stop_name), [new_current_drive_time,
-                             new_current_datetime, current_time]
+                             new_current_datetime, current_time]]
+
+
+def create_middle_city(city_name, distance, travel_distance, current_time,
+                       current_datetime, current_drive_time):
+    """
+    Функция генерирует данные о городе с экскурсией на основе входных параметров
+
+    :param current_datetime: Текущая дата в формате год, месяц, день
+    :param city_name: Название промежуточного города
+    :param travel_distance: Расстояние до промежуточного города
+    :param current_time: Время отбытия из предудущего города
+    :param distance: Расстояние между предудущим городом и текущим
+    :param current_drive_time: Время за рулем в текущий день
+    :return: Список хранящий данные о посещенном городе:
+        Название, время прибытия, время отбытия, название экскурсии в городе
+        и обновлённое время за рулем в текущий день
+    """
+    arrival = current_time + travel_distance / configs["velocity"]
+    current_time = 8
+    arrival_datetime = create_datetime(current_datetime, arrival)
+    current_datetime = current_datetime + datetime.timedelta(days=1)
+    leaving_datetime = create_datetime(current_datetime, current_time)
+    return [City(city_name, arrival_datetime, leaving_datetime,
+                 "Stopping point"), [current_drive_time, current_datetime,
+                                     current_time, distance - travel_distance]]
 
 
 async def find_middle_city(start_city, end_city, max_driving_distance):
@@ -307,6 +318,20 @@ async def find_middle_city(start_city, end_city, max_driving_distance):
             distance = div[index - 1].contents[2].contents[0]
             return [str(div[index - 1].contents[0].string),
                     int(distance[:len(distance) - 3])]
+
+
+def decorator(func):
+    """
+    Декоратор принимающий на вход функцию, возвращающий функцию,
+    которая к результату исходной добавляет True
+    :param func:
+    :return:
+    """
+    def wrapped(*args, **kwargs):
+        temp = list(func(*args, **kwargs))
+        temp.append(True)
+        return temp
+    return wrapped
 
 
 async def complete_course(current_course, current_drive_time,

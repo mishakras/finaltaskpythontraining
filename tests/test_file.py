@@ -128,7 +128,7 @@ async def test_put_middle_city_distance_more_than_max_distance_next_less_than_ma
     Тест нахождения промежуточного города
     """
     with mock.patch('main.find_middle_city') as MockClass:
-        MockClass.return_value = City(1, 1, 1, 1)
+        MockClass.return_value = [1, 1]
         middle_city = await put_middle_city("A", "B", 6, 8, 280,
                                             current_datetime=datetime.datetime(
                                                 year=1, month=1, day=1))
@@ -141,7 +141,7 @@ async def test_put_middle_city_in_distance_more_than_max_distance_next_more_than
     Тест нахождения промежуточного города, при наличии следющего промежуточного города
     """
     with mock.patch('main.find_middle_city') as MockClass:
-        MockClass.side_effect = [City(1, 1, 1, 1), City(2, 2, 2, 2)]
+        MockClass.side_effect = [[1, 1], [2, 2]]
         middle_city = await put_middle_city("A", "B", 6, 8, 280,
                                             current_datetime=datetime.datetime(
                                                 year=1, month=1, day=1))
@@ -169,14 +169,14 @@ async def test_put_middle_city_distance_more_than_max_distance_nonreachable_next
     промежуточные не достижимы
     """
     with mock.patch('main.find_middle_city') as MockClass:
-        MockClass.side_effect = [None, City(2, 2, 2, 2)]
-        middle_city = await put_middle_city("A", "B", 6, 8, 140,
+        MockClass.side_effect = [None, [2, 2]]
+        middle_city = await put_middle_city("A", "B", 6, 8, 140+450,
                                             current_datetime=
                                             datetime.datetime(
-                                                            year=1,
-                                                            month=1,
-                                                            day=1))
-        assert middle_city[0] == 2
+                                                year=1,
+                                                month=1,
+                                                day=1))
+        assert middle_city[0].name == 2
 
 
 @pytest.mark.asyncio
@@ -191,9 +191,9 @@ async def test_put_middle_city_distance_more_than_max_distance_reachable_next_ci
             middle_city = await put_middle_city("A", "B", 6, 8, 140,
                                                 current_datetime=
                                                 datetime.datetime(
-                                                                year=1,
-                                                                month=1,
-                                                                day=1))
+                                                    year=1,
+                                                    month=1,
+                                                    day=1))
             assert middle_city[0] == 1
 
 
@@ -211,20 +211,20 @@ def test_create_excursion_city():
 @pytest.mark.asyncio
 async def test_create_course_without_middle_cities():
     """
-    Тест создания информации о городе с экскурсией
+    Тест создания тура без промежуточных городов
     """
     with mock.patch('main.put_middle_city') as MockClass:
-        MockClass.return_value = City(2,1,1,'B')
+        MockClass.return_value = [City(2, 1, 1, 'B'), [None, None, None, None]]
         current_course = [1, 2]
-        current_course = await create_course_
-        with_middle_cities(current_course, None, None,
-                                        current_datetime =
-                                        datetime.datetime(
-                                            year=1,
-                                            month=1,
-                                            day=1),
-                                        current_time=8)
-        assert current_course[1].name == 2
+        current_course = await \
+            create_course_with_middle_cities(current_course, None, None,
+                                             current_datetime=
+                                             datetime.datetime(
+                                                 year=1,
+                                                 month=1,
+                                                 day=1),
+                                             current_time=8)
+        assert current_course[0][1].name == 2
 
 
 @pytest.mark.asyncio
@@ -233,17 +233,20 @@ async def test_create_course_with_middle_cities():
     Тест задания тура с промежуточным городом
     """
     with mock.patch('main.put_middle_city') as MockClass:
-        MockClass.side_effect = [City(3, 1, 1, 'Stop'), City(2,1,1,'B')]
+        MockClass.side_effect = [[City(3, 1, 1, 'Stop'),
+                                  [None, None, None, None]],
+                                 [City(2, 1, 1, 'B'),
+                                  [None, None, None, None]]]
         current_course = [1, 2]
-        current_course = await create_course_
-        with_middle_cities(current_course, None, None,
-                           current_datetime=
-                           datetime.datetime(
-                               year=1,
-                               month=1,
-                               day=1),
-                           current_time=8)
-        assert current_course[1].name == 3
+        current_course = await \
+            create_course_with_middle_cities(current_course, None, None,
+                                             current_datetime=
+                                             datetime.datetime(
+                                                 year=1,
+                                                 month=1,
+                                                 day=1),
+                                             current_time=8)
+        assert current_course[0][1].name == 3
 
 
 @pytest.mark.asyncio
